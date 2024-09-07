@@ -4,8 +4,9 @@
 
 /* Body */
 body {
-  background: #333;
-  color: hsl(200, 100%, 90%);
+  background: #174B3F;
+  color: #0DBF1C;
+  font-family: Roobert,-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
   max-width: 600px;
   padding: 1rem;
   margin: 0 auto;
@@ -19,47 +20,45 @@ body {
   margin-bottom: 3rem;
 }
 .title {
-  font-family: 'Luckiest Guy';
-  letter-spacing: 0.15rem;
   line-height: 3rem;
 }
 .authors {
-  font-family: 'Kalam';
   line-height: 1rem;
 }
 
-/* Search Container */
+/* Search & Download Containers */
 .search-container {
-  font-family: 'Kalam';
   font-size: 0.8rem;
   text-align: center;
 }
-#searchbar {
-  font-family: 'Kalam';
-  font-size: 1.5rem;
-  color: hsl(200, 100%, 90%);
+.download-container {
+  font-size: 0.75rem;
   text-align: center;
-  background: hsl(200, 100%, 30%);
+}
+#input {
+  font-size: 1.25rem;
+  color: black;
+  text-align: center;
+  background: #AAB9A5;
   padding: 0.5rem 0.5rem;
   outline: none;
-  border: 3px solid hsl(200, 100%, 40%);
+  border: 3px solid white;
   border-radius: 0.25rem;
   max-width: 90%;
 }
-#searchbar:focus {
-  border: 3px solid hsl(200, 100%, 70%);
+#input:focus {
+  border: 3px solid #0DBF1C;
 }
 .submit-btn {
-  font-family: 'Kalam';
   font-size: 1.5rem;
-  color: hsl(200, 100%, 50%);
-  background: hsl(200, 100%, 50%, 0.1);
+  color: black;
+  background: #D1D7CE;
   padding: 0.25rem 5rem;
   outline: none;
-  border: 2px solid hsl(200, 100%, 50%);
+  border: 2px solid white;
   border-radius: 5rem;
   cursor: pointer;
 }
 .submit-btn:hover {
-  background: hsl(200, 100%, 50%, 0.2);
+  background: #0DBF1C;
 }

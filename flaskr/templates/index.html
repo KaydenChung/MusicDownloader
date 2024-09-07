@@ -11,44 +11,64 @@
 
 <body>
 
+    <!-- Header Container -->
     <div class="header-container">
         <h1 class="title">Online Music Downloading Tool</h1>
         <h3 class="authors">Developed by Kayden Chung</h3>
     </div>
 
+    <!-- Search Container -->
     <div class="search-container">
         <h1 class="title">Search for a Track</h1>
         <form id="search-form">
-            <input id="searchbar" type="text" name="name" placeholder="Enter Track Name" required>
+            <input id="input" type="text" name="search" placeholder="Search Query" required>
             <button class="submit-btn" type="submit">Search</button>
         </form>
     </div>
 
+    <!-- Results -->
     <div id="result"></div>
+
+    <!-- Download Container -->
+    <div class="download-container">
+        <h1 class="title">Download Video</h1>
+        <form id="download-form">
+            <input id="input" type="text" name="url" placeholder="YouTube URL" required>
+            <button class="submit-btn" type="submit">Download</button>
+        </form>
+    </div>
 
     <script>
 
-        const form = document.getElementById('search-form');
-        form.addEventListener('submit', async (e) => {
+        // Handle Search Form
+        document.getElementById('search-form').addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const formData = new FormData(form);
+            const formData = new FormData(e.target);
             const response = await fetch('/search', {
                 method: 'POST',
                 body: formData
             });
-
             const data = await response.json();
-            let resultDiv = document.getElementById('result');
-            if (data.error) {
-                resultDiv.innerHTML = `<p>${data.error}</p>`;
-            } else {
-                resultDiv.innerHTML = `
-                    <p>Track Name: ${data.name}</p>
-                    <p>Artist: ${data.artist}</p>
-                    <p>Album: ${data.album}</p>
-                    <p><a href="${data.url}" target="_blank">Listen on Spotify</a></p>
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.innerHTML = '';
+            data.forEach(video => {
+                resultsDiv.innerHTML += `
+                    <p>${video.title} <a href="${video.url}" target="_blank">Watch</a></p>
                 `;
+            });
+        });
+
+        // Handle Download Form
+        document.getElementById('download-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const response = await fetch('/download', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+            if (data.status === 'success') {
+                alert('Download started: ' + data.file);
             }
         });
 

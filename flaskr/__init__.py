@@ -1,9 +1,8 @@
 # Library Imports
 import os
-import spotipy
+import yt_dlp
 from dotenv import load_dotenv
 from flask import Flask, render_template, request, jsonify
-from spotipy.oauth2 import SpotifyClientCredentials
 
 # Creating Flask App
 app = Flask(__name__)
@@ -13,36 +12,44 @@ load_dotenv()
 client_id = os.getenv('CLIENT_ID')
 client_secret = os.getenv('CLIENT_SECRET')
 
-# Authentication
-sp = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=client_id, client_secret=client_secret))
+# Function to Search Videos
+def searchVideo(search):
+    # Placeholder
+    return [{'title': search, 'url': 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'}]
 
-# Search Track Method
-def searchTrack(name):
-    results = sp.search(q=f'track:{name}', type='track', limit=1)
-    tracks = results['tracks']['items']
-    if tracks:
-        track = tracks[0]
-        return {
-            'name': track['name'],
-            'artist': track['artists'][0]['name'],
-            'album': track['album']['name'],
-            'url': track['external_urls']['spotify']
-        }
-    else:
-        return None
+# Function Download Video
+def downloadVideo(url, filename):
+    ydl_opts = {
+        'format': 'bestaudio/best',
+        'outtmpl': filename,
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
+        }],
+    }
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        ydl.download([url])
 
 # Flask App Handling
 @app.route('/')
 def index():
     return render_template('index.html')
+
+# Search POST Request
 @app.route('/search', methods=['POST'])
 def search():
-    name = request.form['name']
-    result = searchTrack(name)
-    if result:
-        return jsonify(result)
-    else:
-        return jsonify({'error': 'Track Not found'})
+    search = request.form['search']
+    results = searchVideo(search)
+    return jsonify(results)
+
+# Download POST Request
+@app.route('/download', methods=['POST'])
+def download():
+    url = request.form['url']
+    filename = 'output.mp3'
+    downloadVideo(url, filename)
+    return jsonify({'status': 'success', 'file': filename})
 
 # Main
 if __name__ == '__main__':
