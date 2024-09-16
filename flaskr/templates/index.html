@@ -29,11 +29,11 @@
     <!-- Results -->
     <div id="result"></div>
 
-    <!-- Download Container -->
-    <div class="download-container">
+    <!-- Download Button -->
+    <div id="download-container" style="display: none;">
         <h1 class="title">Download Video</h1>
         <form id="download-form">
-            <input id="input" type="text" name="url" placeholder="YouTube URL" required>
+            <input id="url" type="hidden" name="url" required>
             <button class="submit-btn" type="submit">Download</button>
         </form>
     </div>
@@ -42,6 +42,7 @@
 
         // Handle Search Form
         document.getElementById('search-form').addEventListener('submit', async (e) => {
+
             e.preventDefault();
             const formData = new FormData(e.target);
             const response = await fetch('/search', {
@@ -49,17 +50,33 @@
                 body: formData
             });
             const data = await response.json();
-            const resultsDiv = document.getElementById('results');
-            resultsDiv.innerHTML = '';
-            data.forEach(video => {
-                resultsDiv.innerHTML += `
+            const resultDiv = document.getElementById('result');
+            const downloadContainer = document.getElementById('download-container');
+            const downloadForm = document.getElementById('download-form');
+
+            // Clear Previous Result
+            resultDiv.innerHTML = '';
+
+            if (data.status === 'success') {
+                const video = data.video;
+
+                // Display Search Result
+                resultDiv.innerHTML = `
                     <p>${video.title} <a href="${video.url}" target="_blank">Watch</a></p>
                 `;
-            });
+                downloadContainer.style.display = 'block';
+                document.getElementById('url').value = video.url;
+
+            } else {
+                resultDiv.innerHTML = `<p>No video found</p>`;
+                downloadContainer.style.display = 'none';
+            }
+
         });
 
         // Handle Download Form
         document.getElementById('download-form').addEventListener('submit', async (e) => {
+
             e.preventDefault();
             const formData = new FormData(e.target);
             const response = await fetch('/download', {
@@ -69,7 +86,10 @@
             const data = await response.json();
             if (data.status === 'success') {
                 alert('Download started: ' + data.file);
+            } else {
+                alert('Error: ' + data.message);
             }
+
         });
 
     </script>
